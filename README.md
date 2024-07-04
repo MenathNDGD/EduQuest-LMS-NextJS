@@ -1,4 +1,4 @@
-# LMS Platform
+# EduQuest LMS Platform
 
 Welcome to the LMS Platform, a robust Learning Management System designed to deliver an exceptional learning experience. Built with Next.js and React, this platform is seamlessly integrated with Stripe for secure payments and Mux for high-quality video streaming. Powered by Prisma ORM and MySQL for a solid backend, and styled with Tailwind CSS for a sleek, modern interface, it’s tailored for both learners and educators.
 
