@@ -2,25 +2,15 @@
 
 import * as z from "zod";
 import axios from "axios";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Course } from "@prisma/client";
+import Image from "next/image";
 
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
-} from "@/components/ui/form";
-
-import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { FileUpload } from "@/components/file-upload";
 
 interface ImageFormProps {
     initialData: Course;
@@ -42,15 +32,6 @@ export const ImageForm = ({
     const toggleEdit = () => setIsEditing((current) => !current);
 
     const router = useRouter();
-
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            imageUrl: initialData?.imageUrl || "",
-        },
-    });
-
-    const { isSubmitting, isValid } = form.formState;
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
@@ -91,43 +72,30 @@ export const ImageForm = ({
                         <ImageIcon className="h-10 w-10 text-slate-500" />
                     </div>
                 ) : (
-                    <div>
-                        Current Image
+                    <div className="relative aspect-video mt-2">
+                        <Image 
+                            alt="Upload"
+                            fill
+                            className="object-cover rounded-md"
+                            src={initialData.imageUrl}
+                        />
                     </div>
                 )
             )}
             {isEditing && (
-                <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        className="space-y-4 mt-4"
-                    >
-                        <FormField 
-                            control={form.control}
-                            name="description"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormControl>
-                                        <Textarea 
-                                            disabled={isSubmitting}
-                                            placeholder="e.g. 'This is a course about...'"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <div className="flex items-center gap-x-2">
-                            <Button 
-                                disabled={!isValid || isSubmitting}
-                                type="submit"
-                            >
-                                Save
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
+                <div>
+                    <FileUpload 
+                        endpoint="courseImage"
+                        onChange={(url) => {
+                            if (url) {
+                                onSubmit({ imageUrl: url });
+                            }
+                        }}
+                    />
+                    <div className="text-xs text-muted-foreground mt-4">
+                        16:9 Aspect Ratio Recommended
+                    </div>
+                </div>
             )}
         </div>
     )
