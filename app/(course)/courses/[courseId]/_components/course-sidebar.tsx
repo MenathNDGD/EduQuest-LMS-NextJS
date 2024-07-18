@@ -1,7 +1,10 @@
-import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { Chapter, Course, UserProgress } from "@prisma/client"
 import { redirect } from "next/navigation";
+
+import { db } from "@/lib/db";
+import { CourseProgress } from "@/components/course-progress";
+
 import { CourseSidebarItem } from "./course-sidebar-item";
 
 interface CourseSidebarProps {
@@ -38,7 +41,14 @@ export const CourseSidebar = async ({
                 <h1 className="font-semibold">
                     {course.title}
                 </h1>
-                {/* Check purchase and add progreee */}
+                {purchase && (
+                    <div>
+                        <CourseProgress
+                            variant="success"
+                            value={progressCount}
+                        />
+                    </div>
+                )}
             </div>
             <div>
                 {course.chapters.map((chapter) => (
